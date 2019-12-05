@@ -1,6 +1,4 @@
-module Main (gasCostCompounded, gasCost, main) where
-
-import Lib
+module Main where
 
 readInt :: String -> Integer
 readInt = read
