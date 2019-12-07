@@ -2,6 +2,7 @@ module Main where
 
 import System.Environment
 import Data.List.Split
+import Data.List (find)
 
 -- p1
 
@@ -44,8 +45,9 @@ compute i l
 subAndCompute :: [Int] -> (Int, Int) -> [Int]
 subAndCompute l (noun, verb) = compute 0 $ concat [take 1 l, [noun, verb], drop 3 l]
 
---searchSum :: [Int] -> Int -> Int
---searchAndSum l target =
+searchAndSum :: [Int] -> Int -> Int -> Int
+searchAndSum l target limit = a * 100 + b
+  where Just (a, b) = find (\(x1,y1) -> head (subAndCompute l (x1, y1)) == target) [(x,y) | x <- [1..limit], y <- [1..limit]]
 
 m2 = do
   args <- getArgs
@@ -53,7 +55,7 @@ m2 = do
   let
     l = map r $ splitOn "," text where r x = read x::Int
     p1 = head $ subAndCompute l (12, 2)
-    p2 = 3
+    p2 = searchAndSum l 19690720 100
   print [p1, p2]
 
 
