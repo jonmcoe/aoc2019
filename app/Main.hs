@@ -3,6 +3,7 @@ module Main where
 import System.Environment
 import Data.List.Split
 import Data.List (find)
+import qualified Data.Set as S
 
 -- p1
 
@@ -63,5 +64,32 @@ m2 = do
   print [p1, p2]
 
 
+-- p3
+
+data Direction = Righty | Lefty | Up | Down deriving Show
+
+charToDirection :: Char -> Direction
+charToDirection 'R' = Righty
+charToDirection 'L' = Lefty
+charToDirection 'U' = Up
+charToDirection 'D' = Down
+charToDirection _ = error "can't parse"
+
+--pathSet :: [(Direction, Int)] -> (Int, Int) -> S.Set[(Int, Int)] -> S.Set[(Int, Int)]
+--pathSet [] _ _ = S.empty
+--pathSet (d:ds) (x, y) soFar = S.union soFar () -- pattern match for drawing them all out by direction...
+
+m3 = do
+  args <- getArgs
+  text <- readFile (head args :: FilePath)
+  let
+    llines = lines text
+    l = map (map r . splitOn ",") llines where r s = (charToDirection (head s), readInt (tail s))
+--    fullPaths = map () -- draw out all paths
+--    p1 =
+  print l
+--  print [p1, p2]
+
+
 main :: IO ()
-main = m2
+main = m3
