@@ -1,6 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
-module Days.Common where
+module Days.Common (ComputerState(tape, output), compute, newComputerState, parseComputerTape, newComputerStateParsedTape) where
 
 import Data.List.Split
 
@@ -14,6 +14,12 @@ data ComputerState = ComputerState { position :: Int
                                    , input    :: Int
                                    , output   :: Int
                                    }
+
+newComputerState :: Int -> String -> ComputerState
+newComputerState i ts = ComputerState {position = 0, tape = parseComputerTape ts, input = i, output = -1}
+
+newComputerStateParsedTape :: [Int] -> ComputerState
+newComputerStateParsedTape t = ComputerState {position = 0, tape = t, input = -1, output = -1}
 
 compute :: ComputerState -> ComputerState
 compute ComputerState{position = i, tape = l, input, output}

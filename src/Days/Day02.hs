@@ -8,11 +8,7 @@ subAndCompute :: [Int] -> (Int, Int) -> Int
 subAndCompute l (noun, verb) = head $ tape endState
   where
     endState         = compute substitutedState
-    substitutedState = ComputerState { position = 0
-                                     , tape = concat [take 1 l, [noun, verb], drop 3 l]
-                                     , input = -1
-                                     , output = -1
-                                     }
+    substitutedState = newComputerStateParsedTape $ concat [take 1 l, [noun, verb], drop 3 l]
 
 search :: [Int] -> Int -> Int -> Maybe (Int, Int)
 search l target limit = find (\(x1,y1) -> subAndCompute l (x1, y1) == target) [(x,y) | x <- [1..limit], y <- [1..limit]]
