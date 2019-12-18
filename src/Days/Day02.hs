@@ -5,6 +5,8 @@ import Data.List (find)
 
 replaceAtIndex l i v = concat [take i l, [v], drop (i + 1) l]
 
+-- introduce inputs and outputs as well as tape to the full state (make a record). make a record or something.
+-- move to shared file, hspec unit test existing solution to ensure it holds
 compute :: Int -> [Int] -> [Int]
 compute i l
   | l!!i == 1  = compute (i + 4) (replaceAtIndex l (l !! (i + 3)) (l!!(l!!(i + 1)) + l!!(l!!(i + 2))))
@@ -30,4 +32,3 @@ day02a t = show $ head $ subAndCompute (parsed t) (12, 2)
 
 day02b :: String -> String
 day02b t = show $ nounVerbSum $ search (parsed t) 19690720 100
-
