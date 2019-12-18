@@ -1,9 +1,8 @@
 module Days.Day02 where
 
-import Data.List.Split
 import Data.List (find)
 
-import Days.Common 
+import Days.Common
 
 subAndCompute :: [Int] -> (Int, Int) -> Int
 subAndCompute l (noun, verb) = head $ tape endState
@@ -23,10 +22,8 @@ nounVerbSum m = case m of
     Just (a,b) -> a * 100 + b
     Nothing    -> -1
 
-parsed t = map r $ splitOn "," t where r x = read x::Int
-
 day02a :: String -> String
-day02a t = show $ subAndCompute (parsed t) (12, 2)
+day02a t = show $ subAndCompute (parseComputerTape t) (12, 2)
 
 day02b :: String -> String
-day02b t = show $ nounVerbSum $ search (parsed t) 19690720 100
+day02b t = show $ nounVerbSum $ search (parseComputerTape t) 19690720 100
