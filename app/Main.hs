@@ -9,7 +9,9 @@ main = do
    let
      chosenDay = head args
      (p1, p2) = daysMapping chosenDay
-     dataFile = if length args > 1 then args!!1 else "./data/p" ++ chosenDay
+     dataFile = case args of
+       _:f:_ ->  f
+       _     -> "./data/p" ++ chosenDay
    fullText <- readFile dataFile
    putStrLn $ p1 fullText
    putStrLn $ p2 fullText
