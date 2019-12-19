@@ -5,12 +5,30 @@ import qualified Data.Map.Strict as M
 
 type Orbit = (String, String)
 
+root = "COM"
+
 parse :: String -> [Orbit]
 parse s = map (parseSingle . splitOn ")") $ lines s
   where parseSingle (a:b:_) = (a,b)
 
+buildForwardMap :: [Orbit] -> M.Map String [String]
+buildForwardMap = buildForwardMapImpl M.empty
+  where
+    buildForwardMapImpl acc ((orbitee, orbitor):rest) = buildForwardMapImpl updatedMap rest
+      where
+        updatedMap = M.alter elemAppend orbitee acc
+        elemAppend Nothing = Just [orbitor]
+        elemAppend (Just existing) = Just (orbitor:existing)
+    buildForwardMapImpl acc [] = acc
+
+sumDepth :: M.Map String [String] -> Int
+sumDepth forwardMap = sumDepthImpl 0 root
+  where
+    sumDepthImpl curDepth curNode = curDepth + sum [sumDepthImpl (succ curDepth) nextUp | nextUp <- M.findWithDefault [] curNode forwardMap]
+
+ -- parse, build map String -> [String], start at COM (guaranteed root) and fan out while incrementing depth and summing
 day06a :: String -> String
-day06a = const "a"
+day06a = show . sumDepth . buildForwardMap . parse
 
 day06b :: String -> String
 day06b = const "b"
