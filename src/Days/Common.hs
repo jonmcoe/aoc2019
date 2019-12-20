@@ -11,7 +11,7 @@ replaceAtIndexsValue l i v = concat [take (l!!i) l, [v], drop ((l!!i) + 1) l]
 
 data ComputerState = ComputerState { position :: Int
                                    , tape     :: [Int]
-                                   , input    :: Int
+                                   , input    :: [Int]
                                    , output   :: Int
                                    }
 
@@ -28,17 +28,17 @@ toParamMode n magnitudeOfInterest
   | otherwise = error $ show d
   where d = mod (div n magnitudeOfInterest) 10
 
-newComputerState :: Int -> String -> ComputerState
+newComputerState :: [Int] -> String -> ComputerState
 newComputerState i ts = ComputerState {position = 0, tape = parseComputerTape ts, input = i, output = -1}
 
 newComputerStateParsedTape :: [Int] -> ComputerState
-newComputerStateParsedTape t = ComputerState {position = 0, tape = t, input = -1, output = -1}
+newComputerStateParsedTape t = ComputerState {position = 0, tape = t, input = [-1], output = -1}
 
 compute :: ComputerState -> ComputerState -- TODO: traverse or other recursion scheme?
 compute c@ComputerState{position = i, tape = l, input, output} = case opcode of
   01 -> compute ComputerState {position = i + 4, tape = replaceAtIndexsValue l (i+3) (firstParam + secondParam), input, output}
   02 -> compute ComputerState {position = i + 4, tape = replaceAtIndexsValue l (i+3) (firstParam * secondParam), input, output}
-  03 -> compute ComputerState {position = i + 2, tape = replaceAtIndexsValue l (i+1) input, input, output}
+  03 -> compute ComputerState {position = i + 2, tape = replaceAtIndexsValue l (i+1) (head input), input = tail input, output}
   04 -> compute ComputerState {position = i + 2, tape = l, input, output = firstParam}
   05 -> compute ComputerState {position = if firstParam /= 0 then secondParam else i + 3, tape = l, input, output}
   06 -> compute ComputerState {position = if firstParam == 0 then secondParam else i + 3, tape = l, input, output}
