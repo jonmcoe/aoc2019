@@ -1,7 +1,7 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
 module Days.Common
-  (ComputerState(tape, output), compute, newComputerState, parseComputerTape, newComputerStateParsedTape, nextOutput, appendToInput) where
+  (ComputerState(tape, output), compute, newComputerState, parseComputerTape, newComputerStateParsedTape, untilOutput, appendToInput) where
 
 import Data.List.Split
 import Data.Maybe (isJust)
@@ -41,8 +41,8 @@ newComputerStateParsedTape t = defaultComputerState { tape = t }
 compute :: ComputerState -> ComputerState
 compute = until halted step
 
-nextOutput :: ComputerState -> ComputerState
-nextOutput cs = until (\x -> isJust (output x) || halted x ) step cs { output = Nothing }
+untilOutput :: ComputerState -> ComputerState
+untilOutput cs = until (\x -> isJust (output x) || halted x ) step cs { output = Nothing }
 
 appendToInput :: Int -> ComputerState -> ComputerState
 appendToInput n c = c { input = input c ++ [n] }
