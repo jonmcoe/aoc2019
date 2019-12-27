@@ -29,8 +29,8 @@ paintedHullImpl acc bearing loc cs = case output nextCs of
 
 showPaintedHull ph = unlines $ map makeRow [maxY,maxY-1..minY]
   where
-    makeRow y = map sqDisplay [(xx, y) | xx <- [minX..maxX]] ++ "\n"
-    sqDisplay cell = if M.findWithDefault 0 cell ph == 1 then '#' else ' '
+    makeRow y = concatMap sqDisplay [(xx, y) | xx <- [minX..maxX]] ++ "\n"
+    sqDisplay cell = " #" !! M.findWithDefault 0 cell ph : " " -- extra space for readability
     maxY = snd $ maximumBy (comparing snd) $ M.keys ph
     minY = snd $ minimumBy (comparing snd) $ M.keys ph
     maxX = fst $ maximumBy (comparing fst) $ M.keys ph
