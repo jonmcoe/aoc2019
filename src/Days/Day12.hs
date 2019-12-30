@@ -1,10 +1,15 @@
-module Days.Day12 where -- vector operations, parsing. Libraries to check out: linear, megaparsec, regex
+{-# LANGUAGE NamedFieldPuns #-}
+
+module Days.Day12 where -- TODO: vector operations, parsing. Libraries to check out: linear, megaparsec, regex
 
 import Data.Char (isDigit)
 import Data.List (transpose)
+import qualified Data.Set as S
 
 type Vecc = [Int]
-data Moon = Moon {pos :: Vecc, vel :: Vecc} deriving (Show, Eq)
+data Moon = Moon {pos :: Vecc, vel :: Vecc} deriving (Show, Eq, Ord)
+
+project i Moon{pos, vel} = Moon {pos=[pos!!i], vel=[vel!!i]}
 
 potentialEnergy = sum . map abs . pos
 kineticEnergy = sum . map abs . vel
@@ -29,19 +34,25 @@ accel curMoon moons = zipWith singleAccel (pos curMoon) (transpose (map pos moon
       | a < b  = 1
       | a > b  = -1
 
-pairwiseSum = zipWith (+)
-
 step :: [Moon] -> [Moon]
 step l = map (\(p,v) -> Moon{pos=p, vel=v}) $ zip newPositions newVelocities
-  where 
+  where
     newPositions  = zipWith pairwiseSum newVelocities oldPositions
     newVelocities = zipWith pairwiseSum oldVelocities accelerations
-    accelerations = map (`accel` l) l 
+    accelerations = map (`accel` l) l
     oldVelocities = map vel l
     oldPositions  = map pos l
-  
-   
+    pairwiseSum   = zipWith (+)
+
+stepsUntilRepeat :: [Moon] -> Int
+stepsUntilRepeat = stepsUntilRepeatImpl S.empty
+  where
+    stepsUntilRepeatImpl acc cur
+      | S.member cur acc = length acc
+      | otherwise        = stepsUntilRepeatImpl (S.insert cur acc) (step cur)
 
 day12a s = show $ sum $ map totalEnergy $ iterate step (parseAll s) !! 1000
---day12a s = show $ sum $ map totalEnergy $ iterate step (parseAll s) !! 1000
-day12b = id
+day12b s = show $ foldr (lcm . stepsUntilRepeat . projectAll) 1 [0..2]
+  where
+    projectAll i = map (project i) moons
+    moons = parseAll s
