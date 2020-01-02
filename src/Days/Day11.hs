@@ -36,5 +36,5 @@ showPaintedHull ph = unlines $ map makeRow [maxY,maxY-1..minY]
     maxX = fst $ maximumBy (comparing fst) $ M.keys ph
     minX = fst $ minimumBy (comparing fst) $ M.keys ph
 
-day11a = show . length . M.keys . paintedHull M.empty . newComputerState []
-day11b = showPaintedHull . paintedHull (M.singleton (0,0) 1) . newComputerState []
+day11a = show . length . M.keys . paintedHull M.empty . newComputerState [] []
+day11b = showPaintedHull . paintedHull (M.singleton (0,0) 1) . newComputerState [] []

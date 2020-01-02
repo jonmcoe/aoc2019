@@ -1,11 +1,11 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
 module Days.Common
-  (ComputerState(output), untilHalt, newComputerState, untilOutput, appendToInput, step, subAndCompute) where
+  (ComputerState(output), appendToInput, getTapeAtIndex, newComputerState, step, untilHalt, untilOutput) where
 
 import Debug.Trace
 import Data.List.Split
-import Data.Maybe (isJust)
+import Data.Maybe (fromJust, isJust)
 import qualified Data.Map as M
 
 
@@ -19,8 +19,14 @@ data ComputerState = ComputerState { position :: Int
                                    , relative :: Int
                                    } deriving Show
 
-parseComputerTape :: String -> Tape
-parseComputerTape t = M.fromList $ zip [0..] $ map r $ splitOn "," t where r x = read x::Int
+getTapeAtIndex :: Int -> ComputerState -> Int
+getTapeAtIndex i cs = tape cs M.! i
+
+parseComputerTape :: String -> [(Int, Int)] -> Tape
+parseComputerTape t replacements = M.union replaceMap parsedMap
+  where
+    parsedMap  = M.fromList $ zip [0..] $ map r $ splitOn "," t where r x = read x::Int
+    replaceMap = M.fromList replacements
 
 defaultComputerState = ComputerState { position = 0, tape = M.empty, input = [], output = Nothing, halted = False, relative = 0 }
 
@@ -39,15 +45,8 @@ toParamMode n magnitudeOfInterest
   | otherwise = error $ show d
   where d = mod (div n magnitudeOfInterest) 10
 
-newComputerState :: [Int] -> String -> ComputerState
-newComputerState i ts = defaultComputerState { tape = parseComputerTape ts, input = i }
-
-subAndCompute :: (Int, Int) -> String -> Int
-subAndCompute (noun, verb) t = tape endState M.! 0
-  where
-    endState         = untilHalt substituteState
-    substituteState  = defaultComputerState { tape = substitutedTape t }
-    substitutedTape  = M.insert 2 verb . M.insert 1 noun . parseComputerTape
+newComputerState :: [Int] -> [(Int,Int)] -> String -> ComputerState
+newComputerState i replacements ts = defaultComputerState { tape = parseComputerTape ts replacements, input = i }
 
 untilHalt :: ComputerState -> ComputerState
 untilHalt = until halted step

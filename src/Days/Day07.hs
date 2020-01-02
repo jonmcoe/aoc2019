@@ -8,7 +8,7 @@ import Days.Common
 
 chainCompute :: String -> [Int] -> Int
 chainCompute t = foldl (\prevOutput ampSetting -> getOutputForPair (ampSetting, prevOutput) t) 0
-  where getOutputForPair (a,b) = fromJust . output . untilOutput . newComputerState [a,b]
+  where getOutputForPair (a,b) = fromJust . output . untilOutput . newComputerState [a,b] []
 
 runFeedbackLoop :: String -> [Int] -> Int
 runFeedbackLoop t params = fromJust $ output $ S.index (runFeedbackLoopImpl initialCsList 0) 4
@@ -25,11 +25,11 @@ runFeedbackLoop t params = fromJust $ output $ S.index (runFeedbackLoopImpl init
         curResult = untilOutput $ S.index csList curIndex
         curIndex  = step `mod` 5
         nextIndex = succ step `mod` 5
-    initialCsList = S.fromList [ newComputerState [head params, 0] t
-                               , newComputerState [params!!1] t
-                               , newComputerState [params!!2] t
-                               , newComputerState [params!!3] t
-                               , newComputerState [params!!4] t
+    initialCsList = S.fromList [ newComputerState [head params, 0] [] t
+                               , newComputerState [params!!1] [] t
+                               , newComputerState [params!!2] [] t
+                               , newComputerState [params!!3] [] t
+                               , newComputerState [params!!4] [] t
                                ]
 
 day07a :: String -> String
