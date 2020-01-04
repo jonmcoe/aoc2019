@@ -13,8 +13,8 @@ import Days.Day10 (day10a, day10b)
 import Days.Day11 (day11a, day11b)
 import Days.Day12 (day12a, day12b)
 import Days.Day13 (day13a, day13b)
+import Days.Day14 (day14a, day14b)
 
--- TODO: if we can allow any showable to return, then no need for show in all the day solutions
 daysMapping :: String -> (String -> String, String -> String)
 daysMapping "01" = (day01a, day01b)
 daysMapping "02" = (day02a, day02b)
@@ -29,4 +29,5 @@ daysMapping "10" = (day10a, day10b)
 daysMapping "11" = (day11a, day11b)
 daysMapping "12" = (day12a, day12b)
 daysMapping "13" = (day13a, day13b)
+daysMapping "14" = (day14a, day14b)
 daysMapping _    = error "not implemented"
